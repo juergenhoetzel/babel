@@ -25,7 +25,7 @@
 ;; Please send suggestions and bug reports to <juergen@hoetzel.info>. 
 ;; The latest version of this package should be available at
 ;;
-;;     <URL:http://www.hoetzel.info/Hacking/emacs/babel.el>
+;;     http://github.com/juergenhoetzel/babel/tree/master
 
 ;;; Commentary:
 
