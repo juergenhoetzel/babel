@@ -138,6 +138,7 @@
 ;;         `babel-echo-area', `babel-select-output-window'
 ;;        * Disable use of echo area usage on xemacs if lines > 1
 ;;          (resize of minibuffer does not work reliable)
+;;        * `babel-url-retrieve' fix for xemacs from Uwe Brauer
 
 ;;    0.9  * Use `babel-buffer-name' for output buffer
             	
@@ -336,7 +337,7 @@ function, not available on other emacsen"
 	      (tmp (url-retrieve-synchronously url)))
 	  (with-current-buffer tmp
 	    ;;shrug: we asume utf8 
-	    ;; (mm-decode-coding-region (point-min) (point-max) 'utf-8)
+	    (decode-coding-region (point-min) (point-max) 'utf-8)
 	    (copy-to-buffer current (point-min) (point-max)))))
     ;; GNUs Emacs
     (require 'url-handlers)
