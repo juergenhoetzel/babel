@@ -1,5 +1,5 @@
 ;;; babel.el --- interface to web translation services such as Babelfish
-;; $Id: babel.el,v 1.30 2009/05/06 20:49:34 juergen Exp $
+;; Git blob $Id$
 ;;;
 ;;; Author: Eric Marsden <emarsden@laas.fr>
 ;;;         Juergen Hoetzel <juergen@hoetzel.info> 
