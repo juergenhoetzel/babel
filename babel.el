@@ -1,5 +1,6 @@
 ;;; babel.el --- interface to web translation services such as Babelfish
-;; Git blob $Id$
+;;;
+;;; Git blob $Id$
 ;;;
 ;;; Author: Eric Marsden <emarsden@laas.fr>
 ;;;         Juergen Hoetzel <juergen@hoetzel.info> 
@@ -866,7 +867,6 @@ If optional argument HERE is non-nil, insert version number at point."
 ;;   (let ((buf (get-buffer-create "*babel-debug*")))
 ;;     (set-buffer buf)
 ;;     (babel-free-fetch "state mechanisms are too busy" "eng" "ger")))
-
 
 (easy-menu-add-item nil '("tools") ["Babel Translation" babel t]) 
 
