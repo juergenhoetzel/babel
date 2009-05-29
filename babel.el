@@ -129,6 +129,9 @@
 
 ;;; History
 
+;;    1.1 * Fixed invalid language code mapping for serveral
+;;    languages
+
 ;;    1.0 * Fixed Google backend (new regex) 
 ;;        * New custom variables `babel-buffer-name',
 ;;         `babel-echo-area', `babel-select-output-window'
@@ -210,7 +213,7 @@
   :group 'applications)
 
 
-(defconst babel-version 1.0
+(defconst babel-version "1.1"
   "The version number of babel.el")
 
 (defconst babel-languages
