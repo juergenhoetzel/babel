@@ -111,12 +111,7 @@
 ;;    server, remove all the uninteresting text and HTML markup.
 ;;
 ;; I would be glad to incorporate backends for new translation servers
-;; which are accessible to the general public. List of translation
-;; engines and multilingual dictionaries at
-;; <URL:http://funsan.biomed.mcgill.ca/~funnell/language.html>.
-;;
-;;
-;; <URL:http://www.xmethods.net/sd/BabelFishService.wsdl>
+;; which are accessible to the general public. 
 ;;
 ;; babel.el was inspired by a posting to the ding list by Steinar Bang
 ;; <sb@metis.no>. Morten Eriksen <mortene@sim.no> provided several
