@@ -174,7 +174,26 @@
 ;;;        * revised history handling 
 ;;;        * added helper function: babel-wash-regex
 
-;;; Code:
+
+;; TODO:
+;;
+;; * Use google xml output
+;; 
+;; * Adjust output window height. Current versions use
+;;  `with-current-buffer' instead `with-output-to-temp-buffer'. So
+;;  `temp-buffer-show-hook' will fail to adjust output window height
+;;  -> Use (fit-window-to-buffer nil babel-max-window-height) to
+;;  adjust output window height in new version.
+;;
+;; * use non-blocking `url-retrieve' 
+;; 
+;; * improve function `babel-simple-html-parse'.
+;; 
+;; * In `babel-quite' function, should be add (boundp
+;;   'babel-previous-window-configuration) to make value of
+;;   `babel-previous-window-configuration' is valid
+;;
+
 
 (require 'cl)
 (require 'mm-url)
