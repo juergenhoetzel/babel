@@ -39,6 +39,7 @@
 ;; presents it in a special *babel* buffer. Currently the following
 ;; backends are available:
 ;;
+;;  * the FOSS MT platform Apertium 
 ;;  * the Babelfish service at babelfish.yahoo.com 
 ;;  * the Google service at translate.google.com
 ;;  * the Transparent Language motor at FreeTranslation.com
@@ -128,6 +129,8 @@
 ;;                 -- Stainless Steel Rat <ratinox@peorth.gweep.net> 
 
 ;;; History
+;;    1.2 * Added FOSS MT platform Apertium 
+;;         (by Kevin Brubeck Unhammer)
 
 ;;    1.1 * Fixed invalid language code mapping for serveral
 ;;          languages
@@ -335,7 +338,8 @@ configuration."
 (defvar babel-backends
   '(("Google" . google)
     ("Babelfish at Yahoo" . fish)
-    ("FreeTranslation" . free))
+    ("FreeTranslation" . free)
+    ("Apertium" .  apertium))
   "List of backends for babel translations.")
 
 (defun babel-sentence-end()		
@@ -858,7 +862,38 @@ If optional argument HERE is non-nil, insert version number at point."
   "Extract the useful information from the HTML returned by google."
   (if (not (babel-wash-regex "<div id=result_box dir=\"[^\"]*\">\\(.*?\\)</div>"))
       (error "Google HTML has changed ; please look for a new version of babel.el")))
+
+(defconst babel-apertium-languages
+  '(("English" . "en")
+    ("Spanish" . "es")
+    ("Esperanto" . "eo")))
+
+ (defun babel-apertium-translation (from to)
+   (member (cons from to)
+	   '(("en" . "es")
+	     ("es" . "en")
+	     ("en" . "eo"))))
+
+(defun babel-apertium-fetch (msg from to)
+  "Connect to apertium server and request the translation."
+  (if (not (babel-apertium-translation from to))
+      (error "Apertium can't translate from %s to %s" from to)
+     (let* ((lang-pair (concat from "-" to))
+	    (pairs `(("pair" . ,lang-pair)
+		     ("text" . ,msg)))
+	    (request-url 
+	     (concat "http://www.neuralnoise.com/ApertiumWeb2/xml.php?"
+		     (babel-form-encode pairs)))
+	    (url-request-method "GET"))
+       (babel-url-retrieve request-url))))
   
+
+(defun babel-apertium-wash ()
+  "Extract the useful information from the XML returned by apertium."
+   (if (not (babel-wash-regex "<translation>\\(.*?\\)</translation>"))
+	     (error "Apertium XML has changed ; please look for a
+	     new version of babel.el")))
+
 ;; TODO: ecs.freetranslation.com
 
 ;; (defun babel-debug ()
