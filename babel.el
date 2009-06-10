@@ -892,7 +892,8 @@ If optional argument HERE is non-nil, insert version number at point."
 
 (defun babel-apertium-wash ()
   "Extract the useful information from the XML returned by apertium."
-   (if (not (babel-wash-regex "<translation>\\(.*?\\)</translation>"))
+   (if (not (babel-wash-regex 
+	     "<translation>\\(\\(.\\|\n\\)*?\\)</translation>"))
 	     (error "Apertium XML has changed ; please look for a
 	     new version of babel.el")))
 
