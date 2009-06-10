@@ -131,6 +131,7 @@
 ;;; History
 ;;    1.2 * Added FOSS MT platform Apertium 
 ;;         (by Kevin Brubeck Unhammer)
+;;	  * Assume UTF-8, if HTTP header missing
 
 ;;    1.1 * Fixed invalid language code mapping for serveral
 ;;          languages
@@ -365,7 +366,8 @@ function, not available on other emacsen"
     (require 'url-handlers)
     (defun babel-url-retrieve (url)
       (let ((tmp (url-retrieve-synchronously url)))
-	(url-insert tmp)))))
+	(unless (cadr (url-insert tmp))
+	  (mm-decode-coding-region (point-min) (point-max) 'utf-8))))))
 
 (defun babel-wash-regex (regex)
   "Extract the useful information from the HTML returned by fetch function
