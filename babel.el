@@ -396,10 +396,11 @@ automatically displayed."
          (from-long
           (if accept-default-setup
               babel-preferred-from-language
-            (completing-read "Translate from: "
+            (completing-read (format "Translate from (%s): " from-suggest) 
                              babel-languages nil t
-                             (cons from-suggest 0)
-                             'babel-from-history)))
+                             nil
+                             'babel-from-history 
+			     from-suggest)))
          (to-avail (remove* from-long babel-languages
                             :test #'(lambda (a b) (string= a (car b)))))
          (to-suggest (or (first 
@@ -409,9 +410,11 @@ automatically displayed."
          (to-long
           (if accept-default-setup
               babel-preferred-to-language
-            (completing-read "Translate to: " to-avail nil t
-                             (cons to-suggest 0)
-                             'babel-to-history)))
+            (completing-read (format "Translate to (%s): "  to-suggest)
+			     to-avail nil t
+                             nil
+                             'babel-to-history
+			     to-suggest)))
          (from (cdr (assoc from-long babel-languages)))
          (to   (cdr (assoc to-long babel-languages)))
          (backends (babel-get-backends from to)))
