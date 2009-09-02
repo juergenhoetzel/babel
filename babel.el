@@ -129,6 +129,8 @@
 ;;                 -- Stainless Steel Rat <ratinox@peorth.gweep.net> 
 
 ;;; History
+;;    1.3 * Added new Google languages
+
 ;;    1.2 * Added FOSS MT platform Apertium 
 ;;         (by Kevin Brubeck Unhammer)
 ;;	  * Assume UTF-8, if HTTP header missing
@@ -217,46 +219,61 @@
   :group 'applications)
 
 
-(defconst babel-version "1.1"
+(defconst babel-version "1.3"
   "The version number of babel.el")
 
 (defconst babel-languages
-  '(("Arabic" . "ar")
+  '(("Afrikaans" . "af")
+    ("Albanian" . "sq")
+    ("Arabic" . "ar")
+    ("Belarusian" . "be")
     ("Bulgarian" . "bg")
     ("Catalan" . "ca")
+    ("Chinese" . "zh-CN")
+    ("Croatian" . "hr")
     ("Czech" . "cs")
     ("Danish" . "da")
-    ("German" . "de")
-    ("Greek" . "el")
+    ("Dutch" . "nl")
     ("English" . "en")
-    ("Spanish" . "es")
+    ("Estonian" . "et")
+    ("Filipino" . "tl")
     ("Finnish" . "fi")
     ("French" . "fr")
-    ("Hindi" . "hi")
-    ("Croatian" . "hr")
-    ("Indonesian" . "id")
-    ("Italian" . "it")
+    ("Galician" . "gl")
+    ("German" . "de")
+    ("Greek" . "el")
     ("Hebrew" . "iw")
+    ("Hindi" . "hi")
+    ("Hungarian" . "hu")
+    ("Icelandic" . "is")
+    ("Indonesian" . "id")
+    ("Irish" . "ga")
+    ("Italian" . "it")
     ("Japanese" . "ja")
     ("Korean" . "ko")
-    ("Lithuanian" . "lt")
     ("Latvian" . "lv")
-    ("Dutch" . "nl")
+    ("Lithuanian" . "lt")
+    ("Macedonian" . "mk")
+    ("Malay" . "ms")
+    ("Maltese" . "mt")
     ("Norwegian" . "no")
+    ("Persian" . "fa")
     ("Polish" . "pl")
     ("Portuguese" . "pt")
     ("Romanian" . "ro")
     ("Russian" . "ru")
+    ("Serbian" . "sr")
     ("Slovak" . "sk")
     ("Slovenian" . "sl")
-    ("Serbian" . "sr")
+    ("Spanish" . "es")
+    ("Swahili" . "sw")
     ("Swedish" . "sv")
-    ("Filipino" . "tl")
+    ("Thai" . "th")
+    ("Turkish" . "tr")
     ("Ukrainian" . "uk")
     ("Vietnamese" . "vi")
-    ("Chinese (Simplified)" . "zh-CN")
-    ("Chinese" . "zh-CN")
-    ("Chinese (Traditional)" . "zh-TW")))
+    ("Welsh" . "cy")
+    ("Yiddish" . "yi")))
 
 (defcustom babel-preferred-to-language "German"
   "*Default target translation language.
