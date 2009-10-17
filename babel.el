@@ -129,6 +129,9 @@
 ;;                 -- Stainless Steel Rat <ratinox@peorth.gweep.net> 
 
 ;;; History
+;;    1.4 * `babel-region' now yank the translation instead insert him at
+;;          point.
+
 ;;    1.3 * Added new Google languages
 
 ;;    1.2 * Added FOSS MT platform Apertium 
@@ -514,10 +517,10 @@ automatically displayed."
 
 (defun babel-region-default (start end &optional arg)
   "Use a web translation service to translate the current region.
- With prefix argument, insert the translation output at point."
+ With prefix argument, yank the translation to the kill-ring."
   (interactive "r\nP")
   (if arg
-      (insert (babel (buffer-substring-no-properties start end) t t))
+      (kill-new (babel (buffer-substring-no-properties start end) t))
     (babel (buffer-substring-no-properties start end) nil t)))
 
 (defun babel-buffer-default ()
@@ -546,7 +549,7 @@ automatically displayed."
    (interactive "P")
    (if (null prefix)
        (if mark-active
-           (babel-region-default (region-beginning) (region-end))
+           (babel-region-default (region-beginning) (region-end) 'yank)
          (babel-buffer-default))
      (babel (read-string "Translate phrase: ") nil t)))
 
@@ -566,10 +569,10 @@ restore window configuration before transform.  Otherwise just do
 ;;;###autoload
 (defun babel-region (start end &optional arg)
   "Use a web translation service to translate the current region.
-With prefix argument, insert the translation output at point."
+With prefix argument, yank the translation to the kill-ring."
   (interactive "r\nP")
   (if arg
-      (insert (babel (buffer-substring-no-properties start end) t))
+      (kill-new (babel (buffer-substring-no-properties start end) t))
     (babel (buffer-substring-no-properties start end))))
 
 ;;;###autoload
