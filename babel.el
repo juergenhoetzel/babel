@@ -3,7 +3,7 @@
 ;;; Git blob $Id$
 ;;;
 ;;; Author: Eric Marsden <emarsden@laas.fr>
-;;;         Juergen Hoetzel <juergen@hoetzel.info> 
+;;;         Juergen Hoetzel <juergen@hoetzel.info>
 ;;; Keywords: translation, web
 ;;; Copyright: (C) 1999-2001 Eric Marsden
 ;;;                2005-2009 Juergen Hoetzel
@@ -12,18 +12,18 @@
 ;;     modify it under the terms of the GNU General Public License as
 ;;     published by the Free Software Foundation; either version 2 of
 ;;     the License, or (at your option) any later version.
-;;     
+;;
 ;;     This program is distributed in the hope that it will be useful,
 ;;     but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 ;;     GNU General Public License for more details.
-;;     
+;;
 ;;     You should have received a copy of the GNU General Public
 ;;     License along with this program; if not, write to the Free
 ;;     Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ;;     MA 02111-1307, USA.
 ;;
-;; Please send suggestions and bug reports to <juergen@hoetzel.info>. 
+;; Please send suggestions and bug reports to <juergen@hoetzel.info>.
 ;; The latest version of this package should be available at
 ;;
 ;;     http://github.com/juergenhoetzel/babel/tree/master
@@ -39,8 +39,8 @@
 ;; presents it in a special *babel* buffer. Currently the following
 ;; backends are available:
 ;;
-;;  * the FOSS MT platform Apertium 
-;;  * the Babelfish service at babelfish.yahoo.com 
+;;  * the FOSS MT platform Apertium
+;;  * the Babelfish service at babelfish.yahoo.com
 ;;  * the Google service at translate.google.com
 ;;  * the Transparent Language motor at FreeTranslation.com
 
@@ -87,7 +87,7 @@
 ;;   (autoload 'babel-buffer "babel"
 ;;     "Use a web translation service to translate the current buffer." t)
 ;;
-;; babel.el requires emacs >= 22 
+;; babel.el requires emacs >= 22
 ;;
 ;;
 ;; Backend information =================================================
@@ -112,7 +112,7 @@
 ;;    server, remove all the uninteresting text and HTML markup.
 ;;
 ;; I would be glad to incorporate backends for new translation servers
-;; which are accessible to the general public. 
+;; which are accessible to the general public.
 ;;
 ;; babel.el was inspired by a posting to the ding list by Steinar Bang
 ;; <sb@metis.no>. Morten Eriksen <mortene@sim.no> provided several
@@ -126,7 +126,7 @@
 ;; adjustments and more improvements.
 ;;
 ;; User quotes: Dieses ist die größte Sache seit geschnittenem Brot.
-;;                 -- Stainless Steel Rat <ratinox@peorth.gweep.net> 
+;;                 -- Stainless Steel Rat <ratinox@peorth.gweep.net>
 
 ;;; History
 ;;    1.4 * `babel-region' now yank the translation instead insert him at
@@ -134,14 +134,14 @@
 
 ;;    1.3 * Added new Google languages
 
-;;    1.2 * Added FOSS MT platform Apertium 
+;;    1.2 * Added FOSS MT platform Apertium
 ;;         (by Kevin Brubeck Unhammer)
 ;;	  * Assume UTF-8, if HTTP header missing
 
 ;;    1.1 * Fixed invalid language code mapping for serveral
 ;;          languages
 
-;;    1.0 * Fixed Google backend (new regex) 
+;;    1.0 * Fixed Google backend (new regex)
 ;;        * New custom variables `babel-buffer-name',
 ;;         `babel-echo-area', `babel-select-output-window'
 ;;        * Disable use of echo area usage on xemacs if lines > 1
@@ -149,12 +149,12 @@
 ;;        * `babel-url-retrieve' fix for xemacs from Uwe Brauer
 
 ;;    0.9  * Use `babel-buffer-name' for output buffer
-            	
-;;    0.8  * Remember window config if `babel-remember-window-configuration' 
+
+;;    0.8  * Remember window config if `babel-remember-window-configuration'
 ;;           is non-nil.
 ;;         * made *babel* buffer read-only
 ;;         * use echo area (like `shell-command')
-;;         * New functions `babel-as-string-default',`babel-region-default', 
+;;         * New functions `babel-as-string-default',`babel-region-default',
 ;;           `babel-buffer-default', `babel-smart' (provided by Andy)
 
 
@@ -163,13 +163,13 @@
 ;;	   * rely on url-* functions (for charset decoding) on GNU emacs
 ;;         * increased chunk size for better performance
 ;;         * added support for all Google languages
-;;         * `babel-region' with prefix argument inserts the translation 
+;;         * `babel-region' with prefix argument inserts the translation
 ;;            output at point.
 
 ;;    0.6  * get rid of w3-region (implementend basic html entity parsing)
 ;;         * get rid of w3-form-encode-xwfu (using mm-url-form-encode-xwfu)
-;;         * no character classes in regex (for xemacs compatibility)   
-;;         * default backend: Google 
+;;         * no character classes in regex (for xemacs compatibility)
+;;         * default backend: Google
 
 ;;    0.5: * Fixed Google and Babelfish backends
 
@@ -179,24 +179,24 @@
 ;;;        * added Google backend
 ;;;        * revised UTF-8 handling
 ;;;        * Added customizable variables: babel-preferred-to-language, babel-preferred-from-language
-;;;        * revised history handling 
+;;;        * revised history handling
 ;;;        * added helper function: babel-wash-regex
 
 
 ;; TODO:
 ;;
 ;; * Use google xml output
-;; 
+;;
 ;; * Adjust output window height. Current versions use
 ;;  `with-current-buffer' instead `with-output-to-temp-buffer'. So
 ;;  `temp-buffer-show-hook' will fail to adjust output window height
 ;;  -> Use (fit-window-to-buffer nil babel-max-window-height) to
 ;;  adjust output window height in new version.
 ;;
-;; * use non-blocking `url-retrieve' 
-;; 
+;; * use non-blocking `url-retrieve'
+;;
 ;; * improve function `babel-simple-html-parse'.
-;; 
+;;
 ;; * In `babel-quite' function, should be add (boundp
 ;;   'babel-previous-window-configuration) to make value of
 ;;   `babel-previous-window-configuration' is valid
@@ -211,7 +211,7 @@
 (eval-and-compile
   (when (featurep 'xemacs)
     (defun url-retrieve-synchronously (url)
-      (save-excursion 
+      (save-excursion
 	(cdr (url-retrieve url))))))
 
 ;; ======================================================================
@@ -284,7 +284,7 @@ This must be the long name of one of the languages in the alist"
   :type `(choice ,@(mapcar (lambda (s) `(const ,(car s))) babel-languages))
   :set (lambda (symbol value)
 	 (set-default symbol value)
-	 (setq babel-to-history (list value))) 
+	 (setq babel-to-history (list value)))
   :group 'babel)
 
 (defcustom babel-preferred-from-language "English"
@@ -310,22 +310,22 @@ configuration."
   :group 'babel)
 
 
-  
+
 (defcustom babel-buffer-name "*babel*"
   "The buffer name of `babel' transform output."
   :type 'string
   :group 'babel)
- 
+
 (defcustom babel-echo-area t
   "If this option is `non-nil' and the output is short enough to
  display in the echo area (which is determined by the variables
  `resize-mini-windows' and `max-mini-window-height'), it is shown in
  echo area.
- 
+
  Default is `t'."
   :type 'boolean
   :group 'babel)
- 
+
 (defcustom babel-select-output-window t
   "Select output window after transform complete.
  This is useful when you have a complex window layout.
@@ -363,12 +363,12 @@ configuration."
     ("Apertium" .  apertium))
   "List of backends for babel translations.")
 
-(defun babel-sentence-end()		
+(defun babel-sentence-end()
   "portability function. emacs 22.0.50 introduced sentence-end
 function, not available on other emacsen"
   (if (fboundp 'sentence-end)
       (sentence-end)
-    sentence-end))	
+    sentence-end))
 
 ;; xemacs compatibility
 (eval-and-compile
@@ -379,7 +379,7 @@ function, not available on other emacsen"
 	(let ((current (current-buffer))
 	      (tmp (url-retrieve-synchronously url)))
 	  (with-current-buffer tmp
-	    ;;shrug: we asume utf8 
+	    ;;shrug: we asume utf8
 	    (decode-coding-region (point-min) (point-max) 'utf-8)
 	    (copy-to-buffer current (point-min) (point-max)))))
     ;; GNUs Emacs
@@ -391,7 +391,7 @@ function, not available on other emacsen"
 
 (defun babel-wash-regex (regex)
   "Extract the useful information from the HTML returned by fetch function
-translated text should be inside parenthesized expression in regex" 
+translated text should be inside parenthesized expression in regex"
   (goto-char (point-min))
   (if (search-forward-regexp regex (point-max) t)
       (progn
@@ -416,15 +416,15 @@ automatically displayed."
          (from-long
           (if accept-default-setup
               babel-preferred-from-language
-            (completing-read (format "Translate from (%s): " from-suggest) 
+            (completing-read (format "Translate from (%s): " from-suggest)
                              babel-languages nil t
                              nil
-                             'babel-from-history 
+                             'babel-from-history
 			     from-suggest)))
          (to-avail (remove* from-long babel-languages
                             :test #'(lambda (a b) (string= a (car b)))))
-         (to-suggest (or (first 
-			  (remove* from-long babel-to-history 
+         (to-suggest (or (first
+			  (remove* from-long babel-to-history
 				   :test #'string=))
 			 (caar to-avail)))
          (to-long
@@ -439,7 +439,7 @@ automatically displayed."
          (to   (cdr (assoc to-long babel-languages)))
          (backends (babel-get-backends from to)))
     (if (not backends)
-	(error "No Backend available for translating %s to %s" 
+	(error "No Backend available for translating %s to %s"
 	       from-long to-long)
       (let* ((backend-str
               (if accept-default-setup (caar backends)
@@ -454,7 +454,7 @@ automatically displayed."
 	     (chunks (babel-chunkify msg 7000))
 	     (translated-chunks '())
 	     (view-read-only nil))
-	(loop for chunk in chunks 
+	(loop for chunk in chunks
 	      do (push (babel-work chunk from to fetcher washer)
 		       translated-chunks))
 	(if no-display
@@ -486,7 +486,7 @@ automatically displayed."
 		    (babel-mode)
 		    (cond ((= lines 0))
 			  ((and babel-echo-area (or (<= lines 1)
-				    (and (not (featurep 'xemacs)) 
+				    (and (not (featurep 'xemacs))
 					 (<= lines
 					     (if resize-mini-windows
 						 (cond ((floatp max-mini-window-height)
@@ -622,14 +622,14 @@ language FROM into language TO."
         if translatable collect b))
 
 
-(defconst babel-html-entity-regex 
+(defconst babel-html-entity-regex
   "&\\(#\\([0-9]+\\)\\|\\([a-zA-Z]+\\)\\);")
 
 (defun babel-decode-html-entitiy (str)
   (if (and str (string-match babel-html-entity-regex
 			     str))
       (if (string= (substring str 1 2) "#")
-	  ;TODO: xemacs 
+	  ;TODO: xemacs
 	  (if (not (featurep 'xemacs))
 	      (let ((number (match-string-no-properties 2 str)))
 		(decode-char 'ucs (string-to-number number)))
@@ -643,8 +643,8 @@ language FROM into language TO."
   "Parse and display the region of this for basic HTML entities."
   (save-excursion
     (goto-char (point-min))
-    (while (and (< (point) (point-max)) (search-forward-regexp 
-					 babel-html-entity-regex 
+    (while (and (< (point) (point-max)) (search-forward-regexp
+					 babel-html-entity-regex
 					 (point-max) t))
       (let* ((start (match-beginning 0))
 	     (end (match-end 0))
@@ -700,7 +700,7 @@ language FROM into language TO."
   (while (search-forward "FLOBSiCLE" nil t)
     (replace-match "\n<p>" nil t)))
 
-(defun babel-simple-html-parse () 
+(defun babel-simple-html-parse ()
   "Replace basic html markup"
   (goto-char (point-min))
   (while (re-search-forward  "<\\(br\\|p\\)/?>" nil t)
@@ -731,9 +731,9 @@ language FROM into language TO."
   "Show the version number of babel in the minibuffer.
 If optional argument HERE is non-nil, insert version number at point."
   (interactive "P")
-  (let ((version-string 
+  (let ((version-string
          (format "Babel version %s" babel-version)))
-    (if here 
+    (if here
         (insert version-string)
       (if (interactive-p)
           (message "%s" version-string)
@@ -790,7 +790,7 @@ If optional argument HERE is non-nil, insert version number at point."
   "Extract the useful information from the HTML returned by Babelfish."
   (if (not (babel-wash-regex "<div id=\"result\"><div style=\"padding:[0-9.]*em;\">\\([^<]*\\)</div></div>"))
       (error "Babelfish HTML has changed ; please look for a new version of babel.el")))
-		       
+
 
 
 ;; FreeTranslation.com stuff ===========================================
@@ -804,7 +804,7 @@ If optional argument HERE is non-nil, insert version number at point."
     ("pt" . "Portuguese")
     ("es" . "Spanish")
     ("no" . "Norwegian")
-    ("ru" . "Russian")  
+    ("ru" . "Russian")
     ("zh-CN" . "SimplifiedChinese")
     ("zh-TW" . "TraditionalChinese")
     ("fr" . "French")))
@@ -812,7 +812,7 @@ If optional argument HERE is non-nil, insert version number at point."
 ;; those inter-language translations that FreeTranslation is capable of
 (defconst babel-free-translations
   '("English/Spanish" "English/French" "English/German" "English/Italian" "English/Dutch" "English/Portuguese"
-    "English/Russian" "English/Norwegian" "English/SimplifiedChinese" "English/TraditionalChinese" "Spanish/English" 
+    "English/Russian" "English/Norwegian" "English/SimplifiedChinese" "English/TraditionalChinese" "Spanish/English"
     "French/English" "German/English" "Italian/English" "Dutch/English" "Portuguese/English"))
 
 (defun babel-free-translation (from to)
@@ -859,15 +859,15 @@ If optional argument HERE is non-nil, insert version number at point."
 
 (defun babel-google-translation (from to)
   ;; Google can always translate in both directions
-  (find to babel-google-languages 
-	:test '(lambda (st el) 
+  (find to babel-google-languages
+	:test '(lambda (st el)
 		 (string= (cdr el) st))))
 
 (defun babel-google-fetch (msg from to)
   "Connect to google server and request the translation."
   ;; Google can always translate in both directions
-  (if (not (find to babel-google-languages 
-	    :test '(lambda (st el) 
+  (if (not (find to babel-google-languages
+	    :test '(lambda (st el)
 		     (string= (cdr el) st))))
       (error "Google can't translate from %s to %s" from to)
     (let* ((pairs `(("text"       . ,(mm-encode-coding-string msg 'utf-8))
@@ -906,16 +906,16 @@ If optional argument HERE is non-nil, insert version number at point."
      (let* ((lang-pair (concat from "-" to))
 	    (pairs `(("pair" . ,lang-pair)
 		     ("text" . ,msg)))
-	    (request-url 
+	    (request-url
 	     (concat "http://www.neuralnoise.com/ApertiumWeb2/xml.php?"
 		     (babel-form-encode pairs)))
 	    (url-request-method "GET"))
        (babel-url-retrieve request-url))))
-  
+
 
 (defun babel-apertium-wash ()
   "Extract the useful information from the XML returned by apertium."
-   (if (not (babel-wash-regex 
+   (if (not (babel-wash-regex
 	     "<translation>\\(\\(.\\|\n\\)*?\\)</translation>"))
 	     (error "Apertium XML has changed ; please look for a
 	     new version of babel.el")))
@@ -927,7 +927,7 @@ If optional argument HERE is non-nil, insert version number at point."
 ;;     (set-buffer buf)
 ;;     (babel-free-fetch "state mechanisms are too busy" "eng" "ger")))
 
-(easy-menu-add-item nil '("tools") ["Babel Translation" babel t]) 
+(easy-menu-add-item nil '("tools") ["Babel Translation" babel t])
 
 (provide 'babel)
 
