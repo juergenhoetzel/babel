@@ -222,7 +222,7 @@
   :group 'applications)
 
 
-(defconst babel-version "1.3"
+(defconst babel-version "1.4"
   "The version number of babel.el")
 
 (defconst babel-languages
