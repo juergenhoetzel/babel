@@ -385,7 +385,8 @@ function, not available on other emacsen"
     ;; GNUs Emacs
     (require 'url-handlers)
     (defun babel-url-retrieve (url)
-      (let ((tmp (url-retrieve-synchronously url)))
+      (let* ((url-show-status nil)
+	     (tmp (url-retrieve-synchronously url)))
 	(unless (cadr (url-insert tmp))
 	  (mm-decode-coding-region (point-min) (point-max) 'utf-8))))))
 
