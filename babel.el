@@ -603,15 +603,12 @@ translated text."
            (babel-region (point-min) (point-max))))))
 
 (defun babel-work (msg from to fetcher washer)
-  (save-excursion
-      (set-buffer (get-buffer-create " *babelurl*"))
-      (erase-buffer)
-      (funcall fetcher (babel-preprocess msg) from to)
-      (funcall washer)
-      (babel-postprocess)
-      (babel-simple-html-parse)
-      (babel-display)
-      (buffer-substring-no-properties (point-min) (point-max))))
+  (with-temp-buffer
+    (funcall fetcher (babel-preprocess msg) from to)
+    (funcall washer)
+    (babel-postprocess)
+    (babel-simple-html-parse)
+    (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun babel-get-backends (from to)
   "Return a list of those backends which are capable of translating
