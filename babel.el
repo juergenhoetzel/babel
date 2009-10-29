@@ -129,10 +129,13 @@
 ;;                 -- Stainless Steel Rat <ratinox@peorth.gweep.net>
 
 ;;; History
+
+;;    Discontinued Log (Use GIT: git://github.com/juergenhoetzel/babel.git)
+
 ;;    1.4 * `babel-region' now yank the translation instead insert him at
 ;;          point.
 
-;;    1.3 * Added new Google languages
+;;    1.3 n* Added new Google languages
 
 ;;    1.2 * Added FOSS MT platform Apertium
 ;;         (by Kevin Brubeck Unhammer)
