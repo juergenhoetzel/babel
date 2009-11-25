@@ -87,7 +87,7 @@
 ;;   (autoload 'babel-buffer "babel"
 ;;     "Use a web translation service to translate the current buffer." t)
 ;;
-;; babel.el requires emacs >= 22
+;; babel.el requires emacs >= 23
 ;;
 ;;
 ;; Backend information =================================================
@@ -208,6 +208,7 @@
 
 (require 'cl)
 (require 'mm-url)
+(require 'json)
 (require 'easymenu)
 
 ;; xemacs compatibility
@@ -871,23 +872,26 @@ If optional argument HERE is non-nil, insert version number at point."
 	    :test '(lambda (st el)
 		     (string= (cdr el) st))))
       (error "Google can't translate from %s to %s" from to)
-    (let* ((pairs `(("text"       . ,(mm-encode-coding-string msg 'utf-8))
-                    ("hl"         . "en")
-                    ("Language"   . "English")
-		    ("ie"         . "UTF-8")
-		    ("oe"         . "UTF-8")
-		    ("sl" . ,from)
-		    ("tl" . ,to)))
-           (url-request-data (babel-form-encode pairs))
+    (let* ((langpair (format "%s|%s" from to))
+	   (pairs `(("q"       . ,(mm-encode-coding-string msg 'utf-8))
+		    ("langpair" . ,langpair)
+		    ("v" . "1.0")))
+	   (url-request-data (babel-form-encode pairs))
 	   (url-request-method "POST")
 	   (url-request-extra-headers
 	    '(("Content-Type" . "application/x-www-form-urlencoded"))))
-      (babel-url-retrieve "http://translate.google.com/translate_t" ))))
+      (babel-url-retrieve  "http://ajax.googleapis.com/ajax/services/language/translate"))))
 
 (defun babel-google-wash ()
   "Extract the useful information from the HTML returned by google."
-  (if (not (babel-wash-regex "<div id=result_box dir=\"[^\"]*\">\\(.*?\\)</div>"))
-      (error "Google HTML has changed ; please look for a new version of babel.el")))
+  (beginning-of-buffer)
+  (let* ((json-object-type 'alist)
+	 (json-response (json-read)))
+    (erase-buffer)
+    (if json-response 
+	(insert-string 
+	 (cdr (assoc 'translatedText (assoc 'responseData json-response))))
+      (error "Google API has changed ; please look for a new version of babel.el"))))
 
 (defconst babel-apertium-languages
   '(("English" . "en")
