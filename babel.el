@@ -612,6 +612,7 @@ translated text."
     (funcall washer)
     (babel-postprocess)
     (babel-simple-html-parse)
+    (babel-display)
     (buffer-substring-no-properties (point-min) (point-max))))
 
 (defun babel-get-backends (from to)
