@@ -188,7 +188,7 @@
 
 ;; TODO:
 ;;
-;; * Use google xml output
+;; * select multiple engines at once
 ;;
 ;; * Adjust output window height. Current versions use
 ;;  `with-current-buffer' instead `with-output-to-temp-buffer'. So
