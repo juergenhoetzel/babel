@@ -282,7 +282,7 @@
     ("Welsh" . "cy")
     ("Yiddish" . "yi")))
 
-(defcustom babel-preferred-to-language "German"
+(defcustom babel-preferred-to-language "Chinese"
   "*Default target translation language.
 This must be the long name of one of the languages in the alist"
   :type `(choice ,@(mapcar (lambda (s) `(const ,(car s))) babel-languages))
@@ -385,14 +385,16 @@ function, not available on other emacsen"
 	  (with-current-buffer tmp
 	    ;;shrug: we asume utf8
 	    (decode-coding-region (point-min) (point-max) 'utf-8)
-	    (copy-to-buffer current (point-min) (point-max)))))
+	    (copy-to-buffer current (point-min) (point-max)))
+	  (kill-buffer tmp)))
     ;; GNUs Emacs
     (require 'url-handlers)
-    (defun babel-url-retrieve (url)
+    (defun babel-url-retrieve (url)  ;; return a buffer
       (let* ((url-show-status nil)
 	     (tmp (url-retrieve-synchronously url)))
 	(unless (cadr (url-insert tmp))
-	  (mm-decode-coding-region (point-min) (point-max) 'utf-8))))))
+	  (mm-decode-coding-region (point-min) (point-max) 'utf-8))
+	(kill-buffer tmp)))))
 
 (defun babel-wash-regex (regex)
   "Extract the useful information from the HTML returned by fetch function
@@ -473,7 +475,7 @@ automatically displayed."
 		     (null babel-previous-window-configuration))
                 (setq babel-previous-window-configuration (current-window-configuration)))
             (with-current-buffer
-		(get-buffer-create babel-buffer-name)
+		(get-buffer-create babel-buffer-name) ;; if not exists, create it
 	      ;; ensure buffer is writeable
 	      (setq buffer-read-only nil)
 	      (erase-buffer)
@@ -558,6 +560,15 @@ automatically displayed."
          (babel-buffer-default))
      (babel (read-string "Translate phrase: ") nil t)))
 
+(defun babel-word ()
+"translate word under cursor use a web service, use preferred settings"
+(interactive)
+(let (
+      (word (thing-at-point 'word))
+      )
+  (if word
+  (babel word nil t))))
+
 (defun babel-quit ()
   "Quit babel window.  If `babel-remember-window-configuration' is t,
 restore window configuration before transform.  Otherwise just do
@@ -605,7 +616,7 @@ translated text."
            (delete-region (point-min) pos))
           (t
            (babel-region (point-min) (point-max))))))
-
+;;;do the real work
 (defun babel-work (msg from to fetcher washer)
   (with-temp-buffer
     (funcall fetcher (babel-preprocess msg) from to)
