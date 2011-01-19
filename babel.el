@@ -282,7 +282,7 @@
     ("Welsh" . "cy")
     ("Yiddish" . "yi")))
 
-(defcustom babel-preferred-to-language "Chinese"
+(defcustom babel-preferred-to-language "German"
   "*Default target translation language.
 This must be the long name of one of the languages in the alist"
   :type `(choice ,@(mapcar (lambda (s) `(const ,(car s))) babel-languages))
