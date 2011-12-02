@@ -361,8 +361,8 @@ configuration."
   "Keymap used in Babel mode.")
 
 (defvar babel-backends
-  '(("Google" . google)
-    ("Babelfish at Yahoo" . fish)
+  '(("Babelfish at Yahoo" . fish)
+    ;;  ("Google" . google), disabled because of non-possible limited API-KEY based usage
     ("FreeTranslation" . free)
     ("Apertium" .  apertium))
   "List of backends for babel translations.")
