@@ -236,7 +236,8 @@
     ("Belarusian" . "be")
     ("Bulgarian" . "bg")
     ("Catalan" . "ca")
-    ("Chinese" . "zh-CN")
+    ("Chinese" . "zh")
+    ("Chinese (trad.)" . "zt")
     ("Croatian" . "hr")
     ("Czech" . "cs")
     ("Danish" . "da")
@@ -763,15 +764,21 @@ If optional argument HERE is non-nil, insert version number at point."
 (defconst babel-fish-languages
   '(("en" . "en")
     ("de" . "de")
+    ("el" . "el")
     ("it" . "it")
+    ("ja" . "ja")
+    ("ko" . "ko")
+    ("nl" . "nl")
+    ("pt" . "ru")
+    ("zh" . "zh")
+    ("zt" . "zt")
     ("pt" . "pt")
     ("es" . "es")
     ("fr" . "fr")))
 
 ;; those inter-language translations that Babelfish is capable of
 (defconst babel-fish-translations
-  '("en_fr" "en_de" "en_it" "en_pt" "en_es" "fr_en" "de_en" "it_en"
-    "es_en" "pt_en"))
+  '("de_en" "en_de" "de_fr" "fr_de" "en_zh" "en_zt" "en_nl" "en_fr" "en_el" "en_it" "en_ja" "en_ko" "en_pt" "en_ru" "en_es" "es_en" "es_fr" "nl_en" "nl_fr" "fr_nl" "fr_en" "fr_el" "fr_it" "fr_pt" "fr_es" "el_en" "el_fr" "it_en" "it_fr" "ja_en" "ko_en" "pt_en" "pt_fr" "ru_en" "zh_en" "zh_zt" "zt_en" "zt_zh"))
 
 ;; if Babelfish is able to translate from language FROM to language
 ;; TO, then return the corresponding string, otherwise return nil
@@ -819,8 +826,8 @@ If optional argument HERE is non-nil, insert version number at point."
     ("es" . "Spanish")
     ("no" . "Norwegian")
     ("ru" . "Russian")
-    ("zh-CN" . "SimplifiedChinese")
-    ("zh-TW" . "TraditionalChinese")
+    ("zh" . "SimplifiedChinese")
+    ("zh" . "TraditionalChinese")
     ("fr" . "French")))
 
 ;; those inter-language translations that FreeTranslation is capable of
