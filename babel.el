@@ -40,7 +40,6 @@
 ;; backends are available:
 ;;
 ;;  * the FOSS MT platform Apertium
-;;  * the Babelfish service at babelfish.yahoo.com
 ;;  * the Google service at translate.google.com
 ;;  * the Transparent Language motor at FreeTranslation.com
 
@@ -362,8 +361,7 @@ configuration."
   "Keymap used in Babel mode.")
 
 (defvar babel-backends
-  '(("Babelfish at Yahoo" . fish)
-    ;;  ("Google" . google), disabled because of non-possible limited API-KEY based usage
+  '(;;  ("Google" . google), disabled because of non-possible limited API-KEY based usage
     ("FreeTranslation" . free)
     ("Apertium" .  apertium))
   "List of backends for babel translations.")
@@ -753,65 +751,6 @@ If optional argument HERE is non-nil, insert version number at point."
       (if (interactive-p)
           (message "%s" version-string)
         version-string))))
-
-
-;; Babelfish-specific functions ================================================
-;;
-;; Babelfish (which uses the SysTran engine) is only able to translate
-;; between a limited number of languages.
-
-;; translation from generic  names to Babelfish 2-letter names
-(defconst babel-fish-languages
-  '(("en" . "en")
-    ("de" . "de")
-    ("el" . "el")
-    ("it" . "it")
-    ("ja" . "ja")
-    ("ko" . "ko")
-    ("nl" . "nl")
-    ("pt" . "ru")
-    ("zh" . "zh")
-    ("zt" . "zt")
-    ("pt" . "pt")
-    ("es" . "es")
-    ("fr" . "fr")))
-
-;; those inter-language translations that Babelfish is capable of
-(defconst babel-fish-translations
-  '("de_en" "en_de" "de_fr" "fr_de" "en_zh" "en_zt" "en_nl" "en_fr" "en_el" "en_it" "en_ja" "en_ko" "en_pt" "en_ru" "en_es" "es_en" "es_fr" "nl_en" "nl_fr" "fr_nl" "fr_en" "fr_el" "fr_it" "fr_pt" "fr_es" "el_en" "el_fr" "it_en" "it_fr" "ja_en" "ko_en" "pt_en" "pt_fr" "ru_en" "zh_en" "zh_zt" "zt_en" "zt_zh"))
-
-;; if Babelfish is able to translate from language FROM to language
-;; TO, then return the corresponding string, otherwise return nil
-(defun babel-fish-translation (from to)
-  (let* ((fromb (cdr (assoc from babel-fish-languages)))
-         (tob   (cdr (assoc to babel-fish-languages)))
-         (comb (and fromb tob (concat fromb "_" tob))))
-    (find comb babel-fish-translations :test #'string=)))
-
-(defun babel-fish-fetch (msg from to)
-  "Connect to the Babelfish server and request the translation."
-  (let ((translation (babel-fish-translation from to)))
-    (unless translation
-      (error "Babelfish can't translate from %s to %s" from to))
-    (let* ((pairs `(("trtext" . ,(mm-encode-coding-string msg 'utf-8))
-		    ("lp" . ,translation)
-		    ("ei" . "UTF-8")
-		    ("doit" . "done")
-		    ("fr" . "bf-res")
-		    ("intl" . "1")
-		    ("tt" . "urltext")
-		    ("btnTrTxt" . "Translate")))
-	   (url-request-data (babel-form-encode pairs))
-             (url-request-method "POST")
-             (url-request-extra-headers
-              '(("Content-Type" . "application/x-www-form-urlencoded"))))
-      (babel-url-retrieve "http://babelfish.yahoo.com/translate_txt" ))))
-
-(defun babel-fish-wash ()
-  "Extract the useful information from the HTML returned by Babelfish."
-  (if (not (babel-wash-regex "<div id=\"result\"><div style=\"padding:[0-9.]*em;\">\\([^<]*\\)</div></div>"))
-      (error "Babelfish HTML has changed ; please look for a new version of babel.el")))
-
 
 
 ;; FreeTranslation.com stuff ===========================================
