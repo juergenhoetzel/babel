@@ -1,12 +1,12 @@
 ;;; babel.el --- interface to web translation services such as Babelfish
-;;;
-;;; Git blob $Id$
-;;;
-;;; Author: Eric Marsden <emarsden@laas.fr>
-;;;         Juergen Hoetzel <juergen@hoetzel.info>
-;;; Keywords: translation, web
-;;; Copyright: (C) 1999-2001 Eric Marsden
-;;;                2005-2009 Juergen Hoetzel
+
+
+;; Author: Juergen Hoetzel <juergen@hoetzel.info>
+;;         Eric Marsden <emarsden@laas.fr>
+;; URL: http://github.com/juergenhoetzel/babel.el
+;; Version: 1.4
+;; Keywords: translation, web
+
 ;;
 ;;     This program is free software; you can redistribute it and/or
 ;;     modify it under the terms of the GNU General Public License as
@@ -204,6 +204,7 @@
 ;;   `babel-previous-window-configuration' is valid
 ;;
 
+;;; Code:
 
 (require 'cl)
 (require 'mm-url)
