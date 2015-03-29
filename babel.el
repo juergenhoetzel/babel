@@ -3,7 +3,7 @@
 
 ;; Author: Juergen Hoetzel <juergen@hoetzel.info>
 ;;         Eric Marsden <emarsden@laas.fr>
-;; URL: http://github.com/juergenhoetzel/babel.el
+;; URL: http://github.com/juergenhoetzel/babel
 ;; Version: 1.4
 ;; Keywords: translation, web
 
