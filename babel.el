@@ -848,7 +848,7 @@ If optional argument HERE is non-nil, insert version number at point."
 	 (json-response (json-read)))
     (erase-buffer)
     (if json-response 
-	(insert-string 
+	(insert
 	 (cdr (assoc 'translatedText (assoc 'responseData json-response))))
       (error "Google API has changed ; please look for a new version of babel.el"))))
 
