@@ -924,6 +924,11 @@ If optional argument HERE is non-nil, insert version number at point."
 
 (easy-menu-add-item nil '("tools") ["Babel Translation" babel t])
 
+(defun mm-encode-coding-string (str coding-system)
+  (if coding-system
+      (encode-coding-string str coding-system)
+    str))
+
 (provide 'babel)
 
 ;;; babel.el ends here
