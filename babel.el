@@ -338,6 +338,11 @@ configuration."
    :type 'boolean
    :group 'babel)
 
+(defcustom babel-google-translate-api-key
+  nil
+  "Google translate api key."
+  :type 'string
+  :group 'babel)
 
 (defvar babel-previous-window-configuration nil
   "The window configuration before transform.")
@@ -362,7 +367,7 @@ configuration."
   "Keymap used in Babel mode.")
 
 (defvar babel-backends
-  '(;;  ("Google" . google), disabled because of non-possible limited API-KEY based usage
+  '(("Google" . google)
     ("FreeTranslation" . free)
     ("Apertium" .  apertium))
   "List of backends for babel translations.")
@@ -831,15 +836,28 @@ If optional argument HERE is non-nil, insert version number at point."
 	    :test '(lambda (st el)
 		     (string= (cdr el) st))))
       (error "Google can't translate from %s to %s" from to)
-    (let* ((langpair (format "%s|%s" from to))
-	   (pairs `(("q"       . ,(mm-encode-coding-string msg 'utf-8))
-		    ("langpair" . ,langpair)
-		    ("v" . "1.0")))
+    (let* ((pairs `(("q" . ,(mm-encode-coding-string msg 'utf-8))
+                    ("key" . ,babel-google-translate-api-key)
+		    ;; ("source" . ,from)
+		    ("target" . ,to)))
 	   (url-request-data (babel-form-encode pairs))
 	   (url-request-method "POST")
 	   (url-request-extra-headers
-	    '(("Content-Type" . "application/x-www-form-urlencoded"))))
-      (babel-url-retrieve  "http://ajax.googleapis.com/ajax/services/language/translate"))))
+	    '(("Content-Type" . "application/x-www-form-urlencoded")))
+           (url-base "https://translation.googleapis.com")
+           (url-path "/language/translate/v2"))
+      (babel-url-retrieve  (concat url-base url-path)))))
+
+(defun assoc-> (alist path)
+  (let ((prop (car path)))
+    (if prop
+        (assoc-> (cond ((symbolp prop) (cdr (assoc (car path) alist)))
+                       ((numberp prop)
+                        (aref alist prop))
+                       (t (error "type not suppored: %s" prop)))
+                 (cdr path))
+      alist)))
+
 
 (defun babel-google-wash ()
   "Extract the useful information from the HTML returned by google."
@@ -847,10 +865,13 @@ If optional argument HERE is non-nil, insert version number at point."
   (let* ((json-object-type 'alist)
 	 (json-response (json-read)))
     (erase-buffer)
-    (if json-response 
-	(insert
-	 (cdr (assoc 'translatedText (assoc 'responseData json-response))))
-      (error "Google API has changed ; please look for a new version of babel.el"))))
+    (let ((resp-text (assoc-> json-response '(data translations 0 translatedText)))
+          (err-text (assoc-> json-response '(error message))))
+      (if resp-text
+          (insert resp-text)
+        (if err-text
+            (error "api error: %s" err-text)
+          (error "Google API has changed ; please look for a new version of babel.el"))))))
 
 (defconst babel-apertium-languages
   '(("English" . "en")
