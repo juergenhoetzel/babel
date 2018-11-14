@@ -411,6 +411,16 @@ translated text should be inside parenthesized expression in regex"
 	(delete-region (point-min) (match-beginning 1))
 	t)))
 
+(defun babel-string (msg from to service)
+  (let* ((backend (symbol-name service))
+         (fetcher (intern (concat "babel-" backend "-fetch")))
+         (washer  (intern (concat "babel-" backend "-wash")))
+         (msg-max 7000))
+    (loop for chunk in (babel-chunkify msg msg-max)
+	  collect (babel-work chunk from to fetcher washer)
+          into translated-chunks
+          finally (return (apply #'concat (nreverse translated-chunks))))))
+
 ;;;###autoload
 (defun babel (msg &optional no-display accept-default-setup)
   "Use a web translation service to translate the message MSG.
