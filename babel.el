@@ -846,6 +846,8 @@ If optional argument HERE is non-nil, insert version number at point."
 	    :test '(lambda (st el)
 		     (string= (cdr el) st))))
       (error "Google can't translate from %s to %s" from to)
+    (if (not babel-google-translate-api-key)
+        (error "Missing api key")
     (let* ((pairs `(("q" . ,(mm-encode-coding-string msg 'utf-8))
                     ("key" . ,babel-google-translate-api-key)
 		    ;; ("source" . ,from)
@@ -856,7 +858,7 @@ If optional argument HERE is non-nil, insert version number at point."
 	    '(("Content-Type" . "application/x-www-form-urlencoded")))
            (url-base "https://translation.googleapis.com")
            (url-path "/language/translate/v2"))
-      (babel-url-retrieve  (concat url-base url-path)))))
+        (babel-url-retrieve  (concat url-base url-path))))))
 
 (defun assoc-> (alist path)
   (let ((prop (car path)))
