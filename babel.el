@@ -419,7 +419,7 @@ translated text should be inside parenthesized expression in regex"
     (loop for chunk in (babel-chunkify msg msg-max)
 	  collect (babel-work chunk from to fetcher washer)
           into translated-chunks
-          finally (return (apply #'concat (nreverse translated-chunks))))))
+          finally (return (apply #'concat translated-chunks)))))
 
 ;;;###autoload
 (defun babel (msg &optional no-display accept-default-setup)
