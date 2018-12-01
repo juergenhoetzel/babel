@@ -344,6 +344,11 @@ configuration."
   :type 'string
   :group 'babel)
 
+(defcustom babel-default-chunksize 7000
+  "The maximum length of a chunk sent to a translation backend."
+  :type 'number
+  :group 'babel)
+
 (defvar babel-previous-window-configuration nil
   "The window configuration before transform.")
 
@@ -415,9 +420,8 @@ translated text should be inside parenthesized expression in regex"
   "Translate MSG between language codes FROM, TO using the backend SERVICE."
   (let* ((backend (symbol-name service))
          (fetcher (intern (concat "babel-" backend "-fetch")))
-         (washer  (intern (concat "babel-" backend "-wash")))
-         (msg-max 7000))
-    (loop for chunk in (babel-chunkify msg msg-max)
+         (washer  (intern (concat "babel-" backend "-wash"))))
+    (loop for chunk in (babel-chunkify msg)
           collect (babel-work chunk from to fetcher washer)
           into translated-chunks
           finally (return (apply #'concat translated-chunks)))))
@@ -474,7 +478,7 @@ automatically displayed."
 	     (backend (symbol-name (cdr (assoc backend-str babel-backends))))
 	     (fetcher (intern (concat "babel-" backend "-fetch")))
 	     (washer  (intern (concat "babel-" backend "-wash")))
-	     (chunks (babel-chunkify msg 7000))
+	     (chunks (babel-chunkify msg))
 	     (translated-chunks '())
 	     (view-read-only nil))
 	(loop for chunk in chunks
@@ -739,12 +743,15 @@ language FROM into language TO."
   (while (re-search-forward  "^[ \t]+"  nil t)
     (replace-match "")))
 
-;; split STR into chunks of around LENGTH characters, trying to
-;; maintain sentence structure (this is used to send big requests in
-;; several batches, because otherwise the motors cut off the
-;; translation).
-(defun babel-chunkify (str chunksize)
-  (let ((start 0)
+(defun babel-chunkify (str &optional chunksize)
+  "Split STR into chunks of around CHUNKSIZE characters.
+
+   Tries to maintain sentence structure (this is used to send big requests in
+   several batches, because otherwise the motors cut off the
+   translation)."
+
+  (let ((chunksize (or chunksize babel-default-chunksize))
+        (start 0)
         (pos 0)
         (chunks '()))
     (while (setq pos (string-match (babel-sentence-end) str pos))
