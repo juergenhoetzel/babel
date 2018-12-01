@@ -868,16 +868,14 @@ If optional argument HERE is non-nil, insert version number at point."
              (url-path "/language/translate/v2"))
         (babel-url-retrieve  (concat url-base url-path))))))
 
-(defun assoc-> (alist path)
-  "Traverse a json object ALIST along PATH."
-  (let ((prop (car path)))
-    (if prop
-        (assoc-> (cond ((symbolp prop) (cdr (assoc (car path) alist)))
-                       ((numberp prop)
-                        (aref alist prop))
-                       (t (error "Type not suppored: %s" prop)))
-                 (cdr path))
-      alist)))
+(defun json-get (json path)
+  "Traverse a json object JSON along PATH."
+  (reduce (lambda (obj prop)
+            (cond ((symbolp prop) (cdr (assoc prop obj)))
+                  ((numberp prop) (when obj (aref obj prop)))
+                  (t (error "Type not suppored: %s" prop))))
+          path
+          :initial-value json))
 
 (defun babel-google-wash ()
   "Extract the useful information from the HTML returned by google."
@@ -885,8 +883,8 @@ If optional argument HERE is non-nil, insert version number at point."
   (let* ((json-object-type 'alist)
 	 (json-response (json-read)))
     (erase-buffer)
-    (let ((resp-text (assoc-> json-response '(data translations 0 translatedText)))
-          (err-text (assoc-> json-response '(error message))))
+    (let ((resp-text (json-get json-response '(data translations 0 translatedText)))
+          (err-text (json-get json-response '(error message))))
       (if resp-text
           (insert resp-text)
         (if err-text
