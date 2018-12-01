@@ -412,12 +412,13 @@ translated text should be inside parenthesized expression in regex"
 	t)))
 
 (defun babel-string (msg from to service)
+  "Translate MSG between language codes FROM, TO using the backend SERVICE."
   (let* ((backend (symbol-name service))
          (fetcher (intern (concat "babel-" backend "-fetch")))
          (washer  (intern (concat "babel-" backend "-wash")))
          (msg-max 7000))
     (loop for chunk in (babel-chunkify msg msg-max)
-	  collect (babel-work chunk from to fetcher washer)
+          collect (babel-work chunk from to fetcher washer)
           into translated-chunks
           finally (return (apply #'concat translated-chunks)))))
 
@@ -861,12 +862,13 @@ If optional argument HERE is non-nil, insert version number at point."
         (babel-url-retrieve  (concat url-base url-path))))))
 
 (defun assoc-> (alist path)
+  "Traverse a json object ALIST along PATH."
   (let ((prop (car path)))
     (if prop
         (assoc-> (cond ((symbolp prop) (cdr (assoc (car path) alist)))
                        ((numberp prop)
                         (aref alist prop))
-                       (t (error "type not suppored: %s" prop)))
+                       (t (error "Type not suppored: %s" prop)))
                  (cdr path))
       alist)))
 
@@ -881,7 +883,7 @@ If optional argument HERE is non-nil, insert version number at point."
       (if resp-text
           (insert resp-text)
         (if err-text
-            (error "api error: %s" err-text)
+            (error "Api error: %s" err-text)
           (error "Google API has changed ; please look for a new version of babel.el"))))))
 
 (defconst babel-apertium-languages
@@ -926,6 +928,7 @@ If optional argument HERE is non-nil, insert version number at point."
 (easy-menu-add-item nil '("tools") ["Babel Translation" babel t])
 
 (defun mm-encode-coding-string (str coding-system)
+  "Encode STR to CODING-SYSTEM."
   (if coding-system
       (encode-coding-string str coding-system)
     str))
