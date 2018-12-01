@@ -344,6 +344,11 @@ configuration."
   :type 'string
   :group 'babel)
 
+(defcustom babel-default-chunksize 7000
+  "The maximum length of a chunk sent to a translation backend."
+  :type 'number
+  :group 'babel)
+
 (defvar babel-previous-window-configuration nil
   "The window configuration before transform.")
 
@@ -412,14 +417,14 @@ translated text should be inside parenthesized expression in regex"
 	t)))
 
 (defun babel-string (msg from to service)
+  "Translate MSG between language codes FROM, TO using the backend SERVICE."
   (let* ((backend (symbol-name service))
          (fetcher (intern (concat "babel-" backend "-fetch")))
-         (washer  (intern (concat "babel-" backend "-wash")))
-         (msg-max 7000))
-    (loop for chunk in (babel-chunkify msg msg-max)
-	  collect (babel-work chunk from to fetcher washer)
+         (washer  (intern (concat "babel-" backend "-wash"))))
+    (loop for chunk in (babel-chunkify msg)
+          collect (babel-work chunk from to fetcher washer)
           into translated-chunks
-          finally (return (apply #'concat (nreverse translated-chunks))))))
+          finally (return (apply #'concat translated-chunks)))))
 
 ;;;###autoload
 (defun babel (msg &optional no-display accept-default-setup)
@@ -473,7 +478,7 @@ automatically displayed."
 	     (backend (symbol-name (cdr (assoc backend-str babel-backends))))
 	     (fetcher (intern (concat "babel-" backend "-fetch")))
 	     (washer  (intern (concat "babel-" backend "-wash")))
-	     (chunks (babel-chunkify msg 7000))
+	     (chunks (babel-chunkify msg))
 	     (translated-chunks '())
 	     (view-read-only nil))
 	(loop for chunk in chunks
@@ -738,12 +743,15 @@ language FROM into language TO."
   (while (re-search-forward  "^[ \t]+"  nil t)
     (replace-match "")))
 
-;; split STR into chunks of around LENGTH characters, trying to
-;; maintain sentence structure (this is used to send big requests in
-;; several batches, because otherwise the motors cut off the
-;; translation).
-(defun babel-chunkify (str chunksize)
-  (let ((start 0)
+(defun babel-chunkify (str &optional chunksize)
+  "Split STR into chunks of around CHUNKSIZE characters.
+
+   Tries to maintain sentence structure (this is used to send big requests in
+   several batches, because otherwise the motors cut off the
+   translation)."
+
+  (let ((chunksize (or chunksize babel-default-chunksize))
+        (start 0)
         (pos 0)
         (chunks '()))
     (while (setq pos (string-match (babel-sentence-end) str pos))
@@ -860,15 +868,14 @@ If optional argument HERE is non-nil, insert version number at point."
              (url-path "/language/translate/v2"))
         (babel-url-retrieve  (concat url-base url-path))))))
 
-(defun assoc-> (alist path)
-  (let ((prop (car path)))
-    (if prop
-        (assoc-> (cond ((symbolp prop) (cdr (assoc (car path) alist)))
-                       ((numberp prop)
-                        (aref alist prop))
-                       (t (error "type not suppored: %s" prop)))
-                 (cdr path))
-      alist)))
+(defun json-get (json path)
+  "Traverse a json object JSON along PATH."
+  (reduce (lambda (obj prop)
+            (cond ((symbolp prop) (cdr (assoc prop obj)))
+                  ((numberp prop) (when obj (aref obj prop)))
+                  (t (error "Type not suppored: %s" prop))))
+          path
+          :initial-value json))
 
 (defun babel-google-wash ()
   "Extract the useful information from the HTML returned by google."
@@ -876,12 +883,12 @@ If optional argument HERE is non-nil, insert version number at point."
   (let* ((json-object-type 'alist)
 	 (json-response (json-read)))
     (erase-buffer)
-    (let ((resp-text (assoc-> json-response '(data translations 0 translatedText)))
-          (err-text (assoc-> json-response '(error message))))
+    (let ((resp-text (json-get json-response '(data translations 0 translatedText)))
+          (err-text (json-get json-response '(error message))))
       (if resp-text
           (insert resp-text)
         (if err-text
-            (error "api error: %s" err-text)
+            (error "Api error: %s" err-text)
           (error "Google API has changed ; please look for a new version of babel.el"))))))
 
 (defconst babel-apertium-languages
@@ -926,6 +933,7 @@ If optional argument HERE is non-nil, insert version number at point."
 (easy-menu-add-item nil '("tools") ["Babel Translation" babel t])
 
 (defun mm-encode-coding-string (str coding-system)
+  "Encode STR to CODING-SYSTEM."
   (if coding-system
       (encode-coding-string str coding-system)
     str))
