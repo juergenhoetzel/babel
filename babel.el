@@ -303,7 +303,7 @@ This must be the long name of one of the languages in the alist"
 
 
 (defcustom babel-remember-window-configuration t
-  "Whether remeber window configuration before transform.  If this
+  "Whether to remember window configuration before transform.  If this
 variable is t, will use `babel-quit' command restore window
 configuration."
   :type 'boolean
