@@ -206,7 +206,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'mm-url)
 (require 'json)
 (require 'easymenu)
@@ -421,7 +421,7 @@ translated text should be inside parenthesized expression in regex"
   (let* ((backend (symbol-name service))
          (fetcher (intern (concat "babel-" backend "-fetch")))
          (washer  (intern (concat "babel-" backend "-wash"))))
-    (loop for chunk in (babel-chunkify msg)
+    (cl-loop for chunk in (babel-chunkify msg)
           collect (babel-work chunk from to fetcher washer)
           into translated-chunks
           finally (return (apply #'concat translated-chunks)))))
@@ -481,7 +481,7 @@ automatically displayed."
 	     (chunks (babel-chunkify msg))
 	     (translated-chunks '())
 	     (view-read-only nil))
-	(loop for chunk in chunks
+	(cl-loop for chunk in chunks
 	      do (push (babel-work chunk from to fetcher washer)
 		       translated-chunks))
 	(if no-display
@@ -499,7 +499,7 @@ automatically displayed."
 	      ;; ensure buffer is writeable
 	      (setq buffer-read-only nil)
 	      (erase-buffer)
-              (loop for tc in (nreverse translated-chunks)
+              (cl-loop for tc in (nreverse translated-chunks)
                     do (insert tc))
               (save-excursion
                 (with-current-buffer babel-buffer-name
@@ -649,7 +649,7 @@ translated text."
 (defun babel-get-backends (from to)
   "Return a list of those backends which are capable of translating
 language FROM into language TO."
-  (loop for b in babel-backends
+  (cl-loop for b in babel-backends
         for name = (symbol-name (cdr b))
         for translator = (intern (concat "babel-" name "-translation"))
         for translatable = (funcall translator from to)
