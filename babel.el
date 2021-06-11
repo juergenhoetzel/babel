@@ -374,9 +374,7 @@ configuration."
 
 (defvar babel-backends
   '(("Libretranslate" . libretranslate)
-    ("Google" . google)
-    ("FreeTranslation" . free)
-    ("Apertium" .  apertium))
+    ("Google" . google))
   "List of backends for babel translations.")
 
 (defun babel-sentence-end()
@@ -779,64 +777,6 @@ If optional argument HERE is non-nil, insert version number at point."
         version-string))))
 
 
-;; FreeTranslation.com stuff ===========================================
-
-;; translation from  generic letter names to FreeTranslation names
-(defconst babel-free-languages
-  '(("en" . "English")
-    ("de" . "German")
-    ("it" . "Italian")
-    ("nl" . "Dutch")
-    ("pt" . "Portuguese")
-    ("es" . "Spanish")
-    ("no" . "Norwegian")
-    ("ru" . "Russian")
-    ("zh" . "SimplifiedChinese")
-    ("zh" . "TraditionalChinese")
-    ("fr" . "French")))
-
-;; those inter-language translations that FreeTranslation is capable of
-(defconst babel-free-translations
-  '("English/Spanish" "English/French" "English/German" "English/Italian" "English/Dutch" "English/Portuguese"
-    "English/Russian" "English/Norwegian" "English/SimplifiedChinese" "English/TraditionalChinese" "Spanish/English"
-    "French/English" "German/English" "Italian/English" "Dutch/English" "Portuguese/English"))
-
-(defun babel-free-translation (from to)
-  (let* ((ffrom (cdr (assoc from babel-free-languages)))
-         (fto   (cdr (assoc to babel-free-languages)))
-         (trans (concat ffrom "/" fto)))
-    (cl-find trans babel-free-translations :test #'string=)))
-
-(defun babel-free-fetch (msg from to)
-  "Connect to the FreeTranslation server and request the translation."
-  (let ((coding-system-for-read 'utf-8)
-	(translation (babel-free-translation from to))
-	(url "http://ets.freetranslation.com/"))
-    (unless translation
-      (error "FreeTranslation can't translate from %s to %s" from to))
-    (let* ((pairs `(("sequence"  . "core")
-                    ("mode"      . "html")
-                    ("template"  . "results_en-us.htm")
-                    ("srctext"   . ,msg)
-		    ("charset"   . "UTF-8")
-                    ("language"  . ,translation)))
-           (url-request-data (babel-form-encode pairs))
-	   (url-mime-accept-string "text/html")
-           (url-request-method "POST")
-	   (url-privacy-level '(email agent))
-	   (url-mime-charset-string "utf-8")
-           (url-request-extra-headers
-            '(("Content-Type" . "application/x-www-form-urlencoded")
-	      ("Referer" . "http://ets.freetranslation.com/"))))
-      (babel-url-retrieve url))))
-
-(defun babel-free-wash ()
-  "Extract the useful information from the HTML returned by FreeTranslation."
-  ;;; <textarea name="dsttext" cols="40" rows="6">hello together</textarea><br />
-  (if (not (babel-wash-regex "<textarea name=\"dsttext\"[^>]+>\\([^<]*\\)</textarea>"))
-      (error "FreeTranslations HTML has changed ; please look for a new version of babel.el")))
-
-
 ;; Google stuff ===========================================
 
 ;; Google supports all languages
@@ -892,39 +832,6 @@ If optional argument HERE is non-nil, insert version number at point."
         (if err-text
             (error "Api error: %s" err-text)
           (error "Google API has changed ; please look for a new version of babel.el"))))))
-
-(defconst babel-apertium-languages
-  '(("English" . "en")
-    ("Spanish" . "es")
-    ("Esperanto" . "eo")))
-
- (defun babel-apertium-translation (from to)
-   (member (cons from to)
-	   '(("en" . "es")
-	     ("es" . "en")
-	     ("en" . "eo"))))
-
-(defun babel-apertium-fetch (msg from to)
-  "Connect to apertium server and request the translation."
-  (if (not (babel-apertium-translation from to))
-      (error "Apertium can't translate from %s to %s" from to)
-     (let* ((lang-pair (concat from "-" to))
-	    (pairs `(("pair" . ,lang-pair)
-		     ("text" . ,msg)))
-	    (request-url
-	     (concat "http://www.neuralnoise.com/ApertiumWeb2/xml.php?"
-		     (babel-form-encode pairs)))
-	    (url-request-method "GET"))
-       (babel-url-retrieve request-url))))
-
-
-(defun babel-apertium-wash ()
-  "Extract the useful information from the XML returned by apertium."
-   (if (not (babel-wash-regex
-	     "<translation>\\(\\(.\\|\n\\)*?\\)</translation>"))
-	     (error "Apertium XML has changed ; please look for a
-	     new version of babel.el")))
-
 
 ;;  https://libretranslate.com/
 
