@@ -373,7 +373,8 @@ configuration."
   "Keymap used in Babel mode.")
 
 (defvar babel-backends
-  '(("Google" . google)
+  '(("Libretranslate" . libretranslate)
+    ("Google" . google)
     ("FreeTranslation" . free)
     ("Apertium" .  apertium))
   "List of backends for babel translations.")
@@ -923,6 +924,60 @@ If optional argument HERE is non-nil, insert version number at point."
 	     "<translation>\\(\\(.\\|\n\\)*?\\)</translation>"))
 	     (error "Apertium XML has changed ; please look for a
 	     new version of babel.el")))
+
+
+;;  https://libretranslate.com/
+
+;; FIXME: Use https://libretranslate.com/languages on first use
+(defconst babel-libretranslate-languages
+  '(("en" . "English")
+    ("ar" . "Arabic")
+    ("zh" . "Chinese")
+    ("fr" . "French")
+    ("de" . "German")
+    ("hi" . "Hindi")
+    ("ga" . "Irish")
+    ("it" . "Italian")
+    ("ja" . "Japanese")
+    ("ko" . "Korean")
+    ("pt" . "Portuguese")
+    ("ru" . "Russian")
+    ("es" . "Spanish")))
+
+
+(defun babel-libretranslate-translation (from to)
+  (and
+   (assoc from babel-libretranslate-languages)
+   (assoc to babel-libretranslate-languages)))
+
+;; FIXME: Custom URL
+(defun babel-libretranslate-fetch (msg from to)
+  "Connect to libretranslate.com and request the translation."
+  (unless (babel-libretranslate-translation from to)
+    (error "Libretranslate can't translate from %s to %s" from to))
+  (let* ((pairs `(("source" . ,from)
+		  ("target" . ,to)
+		  ("q" . ,msg)
+		  ("api_key" . "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")))
+	 (url-request-extra-headers
+          '(("Content-Type" . "application/x-www-form-urlencoded")
+	    ("Origin" . "https://libretranslate.com")))
+	 (request-url "https://libretranslate.com/translate")
+	 (url-request-method "POST")
+	 (url-request-data (babel-form-encode pairs)))
+    (babel-url-retrieve request-url)))
+
+(defun babel-libretranslate-wash ()
+  "Parse JSON response of Libretranslate.com."
+  (beginning-of-buffer)
+  (let* ((json-object-type 'alist)
+	 (json-response (json-read))
+	 (translation (json-get json-response '(translatedText)))
+	 (error-message (json-get json-response '(error))))
+    (erase-buffer)
+    (when error-message
+      (error "Api error: %s" error-message))
+    (insert translation)))
 
 ;; TODO: ecs.freetranslation.com
 
