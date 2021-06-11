@@ -872,12 +872,12 @@ If optional argument HERE is non-nil, insert version number at point."
 
 (defun json-get (json path)
   "Traverse a json object JSON along PATH."
-  (reduce (lambda (obj prop)
-            (cond ((symbolp prop) (cdr (assoc prop obj)))
-                  ((numberp prop) (when obj (aref obj prop)))
-                  (t (error "Type not suppored: %s" prop))))
-          path
-          :initial-value json))
+  (cl-reduce (lambda (obj prop)
+               (cond ((symbolp prop) (cdr (assoc prop obj)))
+                     ((numberp prop) (when obj (aref obj prop)))
+                     (t (error "Type not suppored: %s" prop))))
+             path
+             :initial-value json))
 
 (defun babel-google-wash ()
   "Extract the useful information from the HTML returned by google."
