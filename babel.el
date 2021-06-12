@@ -755,7 +755,7 @@ language FROM into language TO."
         (pos 0)
         (chunks '()))
     (while (setq pos (string-match (babel-sentence-end) str pos))
-      (incf pos)
+      (setq pos (1+ pos))
       (when (> (- pos start) chunksize)
         (push (substring str start pos) chunks)
         (setq start pos)))
