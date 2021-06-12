@@ -755,7 +755,7 @@ language FROM into language TO."
         (pos 0)
         (chunks '()))
     (while (setq pos (string-match (babel-sentence-end) str pos))
-      (incf pos)
+      (setq pos (1+ pos))
       (when (> (- pos start) chunksize)
         (push (substring str start pos) chunks)
         (setq start pos)))
@@ -772,7 +772,7 @@ If optional argument HERE is non-nil, insert version number at point."
          (format "Babel version %s" babel-version)))
     (if here
         (insert version-string)
-      (if (interactive-p)
+      (if (called-interactively-p 'interactive)
           (message "%s" version-string)
         version-string))))
 
@@ -821,7 +821,7 @@ If optional argument HERE is non-nil, insert version number at point."
 
 (defun babel-google-wash ()
   "Extract the useful information from the HTML returned by google."
-  (beginning-of-buffer)
+  (goto-char (point-min))
   (let* ((json-object-type 'alist)
 	 (json-response (json-read)))
     (erase-buffer)
@@ -876,7 +876,7 @@ If optional argument HERE is non-nil, insert version number at point."
 
 (defun babel-libretranslate-wash ()
   "Parse JSON response of Libretranslate.com."
-  (beginning-of-buffer)
+  (goto-char (point-min))
   (let* ((json-object-type 'alist)
 	 (json-response (json-read))
 	 (translation (json-get json-response '(translatedText)))
